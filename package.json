@@ -9,7 +9,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "serve:ssr:app": "node dist/app/server/server.mjs"
+    "serve:ssr:app": "node dist/app/server/server.mjs",
+    "deploy": "ng build --base-href /GOFA/ && cp dist/app/browser/index.html dist/app/browser/404.html && npx angular-cli-ghpages --dir=dist/app/browser"
   },
   "private": true,
   "dependencies": {
