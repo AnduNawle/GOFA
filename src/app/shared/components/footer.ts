@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
           <!-- About -->
           <div class="space-y-6">
             <div class="flex items-center gap-3">
-              <img src="/images/gofalogo.jpg" alt="GOFA Logo" class="h-16 w-16 grayscale brightness-200" />
+              <img src="images/gofalogo.jpg" alt="GOFA Logo" class="h-16 w-16 grayscale brightness-200" />
               <div class="flex flex-col">
                 <span class="text-2xl font-display font-black text-white">GOFA</span>
                 <span class="text-[10px] uppercase tracking-widest opacity-60">Le talent se construit ici</span>

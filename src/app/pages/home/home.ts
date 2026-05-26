@@ -60,7 +60,7 @@ import { limit, orderBy, where } from 'firebase/firestore';
                     <div class="flex items-center justify-between gap-8 mb-8 px-4">
                       <div class="flex flex-col items-center gap-4 group/team">
                         <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center p-4 border border-white/10 group-hover/team:scale-110 transition-transform">
-                          <img [src]="match.homeLogo || '/images/gofalogo.jpg'" alt="GOFA" class="w-full h-full object-contain" />
+                          <img [src]="match.homeLogo || 'images/gofalogo.jpg'" alt="GOFA" class="w-full h-full object-contain" />
                         </div>
                         <span class="text-white font-display font-bold uppercase tracking-widest text-sm">{{ match.homeTeam }}</span>
                       </div>

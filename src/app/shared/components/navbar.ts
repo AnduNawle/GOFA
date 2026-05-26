@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth';
           <!-- Logo & Brand -->
           <div class="flex items-center gap-3 cursor-pointer group" routerLink="/">
             <div class="relative">
-              <img src="/images/gofalogo.jpg" alt="GOFA Logo" class="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-300" />
+              <img src="images/gofalogo.jpg" alt="GOFA Logo" class="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-300" />
               <!-- Bouncing Ball -->
               <div class="absolute -bottom-1 -right-2 animate-soccer-ball">
                 <span class="material-icons text-academy-yellow animate-soccer-ball-spin drop-shadow-[0_0_8px_rgba(255,255,0,0.5)] text-lg sm:text-xl">sports_soccer</span>
@@ -96,7 +96,7 @@ import { AuthService } from '../../core/services/auth';
         <div class="p-6 flex flex-col h-full">
           <div class="flex items-center justify-between mb-10 border-b border-white/10 pb-6">
             <div class="flex items-center gap-2">
-              <img src="/images/gofalogo.jpg" alt="Logo" class="h-8 w-8 object-contain rounded" />
+              <img src="images/gofalogo.jpg" alt="Logo" class="h-8 w-8 object-contain rounded" />
               <span class="text-xl font-display font-black text-academy-yellow">MENU</span>
             </div>
             <button (click)="isMenuOpen.set(false)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-colors">

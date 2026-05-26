@@ -63,7 +63,7 @@ import { orderBy } from 'firebase/firestore';
                     <div class="relative group">
                       <div class="absolute inset-0 bg-academy-blue rounded-full blur-md opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                       <div class="w-24 h-24 md:w-32 md:h-32 bg-white rounded-full flex items-center justify-center p-4 shadow-lg border border-gray-50 relative z-10">
-                        <img [src]="match.homeLogo || '/images/gofalogo.jpg'" class="w-full h-full object-contain drop-shadow-md" [alt]="match.homeTeam" referrerpolicy="no-referrer">
+                        <img [src]="match.homeLogo || 'images/gofalogo.jpg'" class="w-full h-full object-contain drop-shadow-md" [alt]="match.homeTeam" referrerpolicy="no-referrer">
                       </div>
                     </div>
                     <span class="text-sm md:text-lg font-display font-black uppercase tracking-widest text-center text-gray-900">{{ match.homeTeam }}</span>

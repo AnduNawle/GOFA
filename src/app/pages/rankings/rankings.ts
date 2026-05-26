@@ -63,7 +63,7 @@ import { CommonModule } from '@angular/common';
 })
 export class RankingsComponent {
   mockRankings = [
-    { pos: 1, club: 'GOFA', mj: 10, v: 8, n: 0, d: 2, bp: 25, bc: 8, pts: 24, logo: '/images/gofalogo.jpg' },
+    { pos: 1, club: 'GOFA', mj: 10, v: 8, n: 0, d: 2, bp: 25, bc: 8, pts: 24, logo: 'images/gofalogo.jpg' },
     { pos: 2, club: 'GUÉPARD', mj: 10, v: 7, n: 0, d: 3, bp: 20, bc: 10, pts: 21, logo: 'https://firebasestorage.googleapis.com/v0/b/gofa-academy.appspot.com/o/assets%2Flogo_opp.png?alt=media' },
     { pos: 3, club: 'MBALLING', mj: 10, v: 6, n: 0, d: 4, bp: 18, bc: 12, pts: 18, logo: 'https://firebasestorage.googleapis.com/v0/b/gofa-academy.appspot.com/o/assets%2Flogo_opp.png?alt=media' },
     { pos: 4, club: 'ATLANTIQUE', mj: 10, v: 4, n: 1, d: 5, bp: 15, bc: 14, pts: 13, logo: 'https://firebasestorage.googleapis.com/v0/b/gofa-academy.appspot.com/o/assets%2Flogo_opp.png?alt=media' },
