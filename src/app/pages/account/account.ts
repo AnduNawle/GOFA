@@ -4,7 +4,8 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FirebaseService } from '../../core/services/firebase';
 import { Preferences } from '../../core/services/preferences';
-import { where, orderBy } from 'firebase/firestore';
+import { where, orderBy, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../core/firebase-init';
 
 interface UserRegistration {
   id: string;
@@ -80,7 +81,7 @@ interface UserRegistration {
                       }
                     </div>
                     <h2 class="text-3xl font-display font-black tracking-tight uppercase italic text-academy-yellow">
-                      {{ authService.user()?.displayName }}
+                      {{ profileDisplayName() || authService.user()?.displayName }}
                     </h2>
                     <p class="text-white/70 text-sm font-mono flex items-center gap-1.5 justify-center md:justify-start">
                       <span class="material-icons text-xs leading-none">email</span>
@@ -91,11 +92,11 @@ interface UserRegistration {
 
                 <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 shrink-0">
                   <button 
-                    (click)="activeTab.set(activeTab() === 'settings' ? 'records' : 'settings')" 
+                    (click)="activeTab.set(activeTab() === 'profile' ? 'records' : 'profile')" 
                     class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-widest border border-white/10 hover:border-white/20 transition-all flex items-center gap-2"
                   >
-                    <span class="material-icons text-sm">{{ activeTab() === 'settings' ? 'assignment' : 'settings' }}</span>
-                    {{ activeTab() === 'settings' ? 'Mes dossiers' : 'Réglages' }}
+                    <span class="material-icons text-sm">{{ activeTab() === 'profile' ? 'assignment' : 'person' }}</span>
+                    {{ activeTab() === 'profile' ? 'Mes dossiers' : 'Mon Profil' }}
                   </button>
                   
                   @if (authService.user()?.email === 'youknowfeus@gmail.com') {
@@ -138,6 +139,54 @@ interface UserRegistration {
                 <p class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Refusés / Autres</p>
                 <p class="text-3xl font-display font-black text-red-500">{{ rejectedCount() }}</p>
               </div>
+            </div>
+
+            <!-- Central Navigation Tabs -->
+            <div class="flex flex-wrap justify-center sm:justify-start gap-2 border-b border-gray-200/50 pb-1">
+              <button 
+                (click)="activeTab.set('records')"
+                class="px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-widest transition-all flex items-center gap-2 border cursor-pointer"
+                [class.bg-academy-blue]="activeTab() === 'records'"
+                [class.text-white]="activeTab() === 'records'"
+                [class.border-academy-blue]="activeTab() === 'records'"
+                [class.bg-white]="activeTab() !== 'records'"
+                [class.text-academy-blue]="activeTab() !== 'records'"
+                [class.border-gray-200/60]="activeTab() !== 'records'"
+                [class.hover:bg-gray-50]="activeTab() !== 'records'"
+              >
+                <span class="material-icons text-sm">assignment</span>
+                Dossiers
+              </button>
+
+              <button 
+                (click)="activeTab.set('profile')"
+                class="px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-widest transition-all flex items-center gap-2 border cursor-pointer"
+                [class.bg-academy-blue]="activeTab() === 'profile'"
+                [class.text-white]="activeTab() === 'profile'"
+                [class.border-academy-blue]="activeTab() === 'profile'"
+                [class.bg-white]="activeTab() !== 'profile'"
+                [class.text-academy-blue]="activeTab() !== 'profile'"
+                [class.border-gray-200/60]="activeTab() !== 'profile'"
+                [class.hover:bg-gray-50]="activeTab() !== 'profile'"
+              >
+                <span class="material-icons text-sm">person</span>
+                Mon Profil
+              </button>
+
+              <button 
+                (click)="activeTab.set('settings')"
+                class="px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-widest transition-all flex items-center gap-2 border cursor-pointer"
+                [class.bg-academy-blue]="activeTab() === 'settings'"
+                [class.text-white]="activeTab() === 'settings'"
+                [class.border-academy-blue]="activeTab() === 'settings'"
+                [class.bg-white]="activeTab() !== 'settings'"
+                [class.text-academy-blue]="activeTab() !== 'settings'"
+                [class.border-gray-200/60]="activeTab() !== 'settings'"
+                [class.hover:bg-gray-50]="activeTab() !== 'settings'"
+              >
+                <span class="material-icons text-sm">settings</span>
+                Réglages
+              </button>
             </div>
 
             @if (activeTab() === 'records') {
@@ -247,7 +296,7 @@ interface UserRegistration {
                   </div>
                 }
               </div>
-            } @else {
+            } @else if (activeTab() === 'settings') {
               <!-- Settings Section - High-quality Custom UI -->
               <div class="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-xl space-y-8 animate-in fade-in slide-in-from-right duration-300">
                 <div class="border-b border-gray-100 pb-6 flex items-center justify-between gap-4">
@@ -439,6 +488,141 @@ interface UserRegistration {
                   </button>
                 </div>
               </div>
+            } @else if (activeTab() === 'profile') {
+              <!-- Profile Section -->
+              <div class="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-xl space-y-8 animate-in fade-in duration-300">
+                <div class="border-b border-gray-100 pb-6 flex items-center justify-between gap-4">
+                  <div>
+                    <h3 class="text-xl font-display font-black text-academy-blue uppercase italic">Profil Joueur / Membre</h3>
+                    <p class="text-xs text-gray-400 leading-normal mt-1">Complétez vos détails sportifs et coordonnées de contact.</p>
+                  </div>
+                  <span class="material-icons text-academy-blue/20 text-4xl hidden sm:block">person_outline</span>
+                </div>
+
+                @if (profileSaved()) {
+                  <div class="p-4 bg-green-50/80 border border-green-200/50 text-green-800 rounded-2xl flex items-center gap-3 animate-in fade-in duration-300">
+                    <span class="material-icons text-green-600">check_circle</span>
+                    <p class="text-xs font-bold uppercase tracking-widest">Votre profil a été mis à jour avec succès !</p>
+                  </div>
+                }
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                  <!-- General Information -->
+                  <div class="space-y-4">
+                    <h4 class="text-xs font-black uppercase text-academy-blue tracking-wider flex items-center gap-2">
+                       <span class="material-icons text-sm">badge</span> Informations Générales
+                    </h4>
+
+                    <div class="space-y-4">
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Nom complet</span>
+                        <input 
+                          type="text" 
+                          [value]="profileDisplayName()" 
+                          (input)="profileDisplayName.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors"
+                          placeholder="Ex: John Doe"
+                        />
+                      </div>
+
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Téléphone de contact</span>
+                        <input 
+                          type="tel" 
+                          [value]="profilePhoneNumber()" 
+                          (input)="profilePhoneNumber.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors"
+                          placeholder="Ex: +221 77 000 00 00"
+                        />
+                      </div>
+
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Date de naissance</span>
+                        <input 
+                          type="date" 
+                          [value]="profileBirthDate()" 
+                          (input)="profileBirthDate.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors"
+                        />
+                      </div>
+
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Adresse ou Ville de résidence</span>
+                        <input 
+                          type="text" 
+                          [value]="profileAddress()" 
+                          (input)="profileAddress.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors"
+                          placeholder="Ex: Dakar, Sénégal"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Athletic Details -->
+                  <div class="space-y-4">
+                    <h4 class="text-xs font-black uppercase text-academy-blue tracking-wider flex items-center gap-2">
+                      <span class="material-icons text-sm">sports_soccer</span> Détails Sportifs & Préférences
+                    </h4>
+
+                    <div class="space-y-4">
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Pied de prédilection</span>
+                        <select 
+                          [value]="profilePreferredFoot()" 
+                          (change)="profilePreferredFoot.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors text-left"
+                        >
+                          <option value="Droit">Droitier (Droit)</option>
+                          <option value="Gauche">Gaucher (Gauche)</option>
+                          <option value="Les deux">Ambidextre (Les deux)</option>
+                        </select>
+                      </div>
+
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Club de coeur / Préféré (Pro)</span>
+                        <input 
+                          type="text" 
+                          [value]="profileFavoriteClub()" 
+                          (input)="profileFavoriteClub.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors"
+                          placeholder="Ex: Real Madrid, PSG, FC Barcelone"
+                        />
+                      </div>
+
+                      <div class="space-y-1">
+                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-wider">Ma motivation ou bio sportive</span>
+                        <textarea 
+                          rows="4"
+                          [value]="profileMotivation()" 
+                          (input)="profileMotivation.set($any($event.target).value)"
+                          class="w-full text-xs font-bold text-academy-blue bg-gray-50/50 border border-gray-100 focus:bg-white focus:border-academy-blue rounded-xl p-3.5 focus:outline-none transition-colors resize-none"
+                          placeholder="Parlez-nous de vos objectifs à l'Académie sportive..."
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
+                  <button 
+                    (click)="activeTab.set('records')"
+                    class="px-5 py-3 border border-gray-200 text-gray-500 rounded-xl font-display font-bold text-xs uppercase tracking-widest hover:bg-gray-50 transition-all cursor-pointer"
+                  >
+                    Retour aux dossiers
+                  </button>
+                  <button 
+                    (click)="saveProfile()"
+                    [disabled]="isSavingProfile()"
+                    class="bg-academy-blue text-white px-6 py-3.5 rounded-xl font-display font-black uppercase tracking-widest text-xs hover:bg-academy-blue-light hover:scale-105 active:scale-95 transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-55"
+                  >
+                    <span class="material-icons text-sm">
+                      {{ isSavingProfile() ? 'sync' : 'save_alt' }}
+                    </span>
+                    {{ isSavingProfile() ? 'Enregistrement...' : 'Enregistrer mon Profil' }}
+                  </button>
+                </div>
+              </div>
             }
 
           </div>
@@ -462,7 +646,7 @@ export class AccountComponent {
   rejectedCount = signal(0);
 
   // Custom view and personalization settings mapped directly to global Preferences
-  activeTab = signal<'records' | 'settings'>('records');
+  activeTab = signal<'records' | 'settings' | 'profile'>('records');
   prefLanguage = this.preferences.language;
   prefEmailAlerts = this.preferences.emailAlerts;
   prefSmsAlerts = this.preferences.smsAlerts;
@@ -471,12 +655,24 @@ export class AccountComponent {
   prefNotificationType = this.preferences.notificationType;
   settingsSaved = signal(false);
 
+  // Profile Signals
+  profileDisplayName = signal('');
+  profilePhoneNumber = signal('');
+  profileBirthDate = signal('');
+  profileAddress = signal('');
+  profileFavoriteClub = signal('');
+  profilePreferredFoot = signal<'Droit' | 'Gauche' | 'Les deux'>('Droit');
+  profileMotivation = signal('');
+  isSavingProfile = signal(false);
+  profileSaved = signal(false);
+
   constructor() {
     // Re-run registration query every time authorized user changes
     effect(() => {
       const currentUser = this.authService.user();
       if (currentUser) {
         this.loadUserRegistrations(currentUser.uid);
+        this.loadProfile(currentUser.uid);
       } else {
         this.registrations.set([]);
         this.clearCounts();
@@ -520,6 +716,59 @@ export class AccountComponent {
       }, 3000);
     } catch (e) {
       console.error('Error saving local preferences:', e);
+    }
+  }
+
+  async loadProfile(userId: string) {
+    try {
+      const snap = await this.firebaseService.getDocument<Record<string, unknown>>('users', userId);
+      if (snap) {
+        this.profileDisplayName.set(String(snap['displayName'] || ''));
+        this.profilePhoneNumber.set(String(snap['phoneNumber'] || ''));
+        this.profileBirthDate.set(String(snap['birthDate'] || ''));
+        this.profileAddress.set(String(snap['address'] || ''));
+        this.profileFavoriteClub.set(String(snap['favoriteClub'] || ''));
+        this.profilePreferredFoot.set((snap['preferredFoot'] as 'Droit' | 'Gauche' | 'Les deux') || 'Droit');
+        this.profileMotivation.set(String(snap['motivation'] || ''));
+      } else {
+        const currentUser = this.authService.user();
+        if (currentUser) {
+          this.profileDisplayName.set(currentUser.displayName || '');
+        }
+      }
+    } catch (e) {
+      console.error('Error loading profile:', e);
+    }
+  }
+
+  async saveProfile() {
+    const currentUser = this.authService.user();
+    if (!currentUser) return;
+
+    this.isSavingProfile.set(true);
+    try {
+      const payload = {
+        displayName: this.profileDisplayName(),
+        phoneNumber: this.profilePhoneNumber(),
+        birthDate: this.profileBirthDate(),
+        address: this.profileAddress(),
+        favoriteClub: this.profileFavoriteClub(),
+        preferredFoot: this.profilePreferredFoot(),
+        motivation: this.profileMotivation(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await setDoc(userDocRef, payload, { merge: true });
+      
+      this.profileSaved.set(true);
+      setTimeout(() => {
+        this.profileSaved.set(false);
+      }, 3000);
+    } catch (e) {
+      console.error('Error saving profile:', e);
+    } finally {
+      this.isSavingProfile.set(false);
     }
   }
 
