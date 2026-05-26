@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 0. Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn(); 
+    }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // --- Validation Blueprints ---
+
+    function isValidMatch(data) {
+      return data.homeTeam is string && data.homeTeam.size() <= 100 &&
+             data.awayTeam is string && data.awayTeam.size() <= 100 &&
+             data.category in ['U13', 'U15', 'U17', 'Séniors'] &&
+             data.date is timestamp;
+    }
+
+    function isValidPlayer(data) {
+      return data.name is string && data.name.size() <= 100 &&
+             data.position is string && data.position.size() <= 50 &&
+             data.category is string;
+    }
+
+    function isValidNews(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 10000 &&
+             data.date is timestamp;
+    }
+
+    function isValidRegistration(data) {
+      return data.firstName is string && data.firstName.size() <= 50 &&
+             data.lastName is string && data.lastName.size() <= 50 &&
+             data.parentPhone is string && data.parentPhone.size() <= 20 &&
+             data.createdAt == request.time;
+    }
+
+    // --- Collection Rules ---
+
+    match /matches/{matchId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidMatch(incoming()) && isValidId(matchId);
+      allow delete: if isAdmin() && isValidId(matchId);
+    }
+
+    match /players/{playerId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidPlayer(incoming()) && isValidId(playerId);
+      allow delete: if isAdmin() && isValidId(playerId);
+    }
+
+    match /news/{newsId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidNews(incoming()) && isValidId(newsId);
+      allow delete: if isAdmin() && isValidId(newsId);
+    }
+
+    match /registrations/{regId} {
+      allow create: if isValidRegistration(incoming()) && isValidId(regId);
+      allow read, update, delete: if isAdmin();
+    }
+
+    function isValidMessage(data) {
+      return data.name is string && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.subject is string && data.subject.size() <= 150 &&
+             data.message is string && data.message.size() <= 1000 &&
+             data.createdAt == request.time;
+    }
+
+    match /messages/{messageId} {
+      allow create: if isValidMessage(incoming()) && isValidId(messageId);
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

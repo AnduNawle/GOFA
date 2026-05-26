@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "match": {
+      "title": "Match",
+      "description": "A football match record",
+      "type": "object",
+      "properties": {
+        "homeTeam": { "type": "string" },
+        "awayTeam": { "type": "string" },
+        "homeScore": { "type": "number" },
+        "awayScore": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "location": { "type": "string" },
+        "category": { "type": "string", "enum": ["U13", "U15", "U17", "Séniors"] },
+        "competition": { "type": "string" },
+        "isFinished": { "type": "boolean" },
+        "homeLogo": { "type": "string" },
+        "awayLogo": { "type": "string" }
+      },
+      "required": ["homeTeam", "awayTeam", "date", "category"]
+    },
+    "player": {
+      "title": "Player",
+      "description": "An academy player profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "position": { "type": "string" },
+        "age": { "type": "number" },
+        "category": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "matches": { "type": "number" },
+            "goals": { "type": "number" },
+            "assists": { "type": "number" }
+          }
+        },
+        "isPlayerOfTheWeek": { "type": "boolean" }
+      },
+      "required": ["name", "position", "category"]
+    },
+    "news": {
+      "title": "News",
+      "description": "An academy news article",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "imageUrl": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["title", "content", "date"]
+    },
+    "registration": {
+      "title": "Registration",
+      "description": "An enrollment application",
+      "type": "object",
+      "properties": {
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "position": { "type": "string" },
+        "parentPhone": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected"] }
+      },
+      "required": ["firstName", "lastName", "birthDate", "parentPhone", "createdAt"]
+    }
+  },
+  "firestore": {
+    "matches": {
+      "schema": "match",
+      "description": "Collection of all matches"
+    },
+    "players": {
+      "schema": "player",
+      "description": "Collection of academy players"
+    },
+    "news": {
+      "schema": "news",
+      "description": "Collection of academy news"
+    },
+    "registrations": {
+      "schema": "registration",
+      "description": "Collection of enrollment applications"
+    }
+  }
+}

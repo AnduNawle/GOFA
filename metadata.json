@@ -1,0 +1,13 @@
+{
+  "name": "GOFA - Golf Océan Football Academy",
+  "description": "Site officiel de la Golf Océan Football Academy (GOFA). Suivez les matchs, les joueurs, et inscrivez-vous à l'académie.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Sports Management",
+    "Player Profiles",
+    "Match Statistics",
+    "Registration Services"
+  ]
+}

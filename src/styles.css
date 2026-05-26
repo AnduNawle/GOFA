@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-academy-blue: #011e41;
+  --color-academy-blue-light: #022d61;
+  --color-academy-yellow: #fccb05;
+  --color-academy-yellow-dark: #e5b800;
+
+  --breakpoint-xs: 475px;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-gray-50 text-gray-900;
+  }
+}
+
+/* Custom styles for the academy project */
+.shadow-gold {
+  box-shadow: 0 0 20px rgba(252, 203, 5, 0.2);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+}
