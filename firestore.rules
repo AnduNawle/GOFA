@@ -10,7 +10,7 @@ service cloud.firestore {
     // --- Helpers ---
     function isSignedIn() { return request.auth != null; }
     function isAdmin() { 
-      return isSignedIn(); 
+      return isSignedIn() && (request.auth.token.email == 'youknowfeus@gmail.com'); 
     }
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function incoming() { return request.resource.data; }
@@ -37,11 +37,19 @@ service cloud.firestore {
              data.date is timestamp;
     }
 
+    function isValidUser(data) {
+      return data.uid is string &&
+             data.displayName is string &&
+             data.email is string &&
+             data.updatedAt == request.time;
+    }
+
     function isValidRegistration(data) {
       return data.firstName is string && data.firstName.size() <= 50 &&
              data.lastName is string && data.lastName.size() <= 50 &&
              data.parentPhone is string && data.parentPhone.size() <= 20 &&
-             data.createdAt == request.time;
+             data.createdAt == request.time &&
+             (!('userId' in data) || data.userId is string);
     }
 
     // --- Collection Rules ---
@@ -68,9 +76,15 @@ service cloud.firestore {
       allow delete: if isAdmin() && isValidId(newsId);
     }
 
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+    }
+
     match /registrations/{regId} {
       allow create: if isValidRegistration(incoming()) && isValidId(regId);
-      allow read, update, delete: if isAdmin();
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
     }
 
     function isValidMessage(data) {

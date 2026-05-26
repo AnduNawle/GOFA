@@ -65,12 +65,30 @@
         "position": { "type": "string" },
         "parentPhone": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
-        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected"] }
+        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected"] },
+        "userId": { "type": "string" }
       },
       "required": ["firstName", "lastName", "birthDate", "parentPhone", "createdAt"]
+    },
+    "user": {
+      "title": "User",
+      "description": "A user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "email", "updatedAt"]
     }
   },
   "firestore": {
+    "users": {
+      "schema": "user",
+      "description": "Collection of user profiles"
+    },
     "matches": {
       "schema": "match",
       "description": "Collection of all matches"

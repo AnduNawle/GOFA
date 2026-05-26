@@ -10,6 +10,7 @@ import { RegistrationComponent } from './pages/registration/registration';
 import { ContactComponent } from './pages/contact/contact';
 import { NotFoundComponent } from './pages/not-found/not-found';
 import { Admin } from './pages/admin/admin';
+import { AccountComponent } from './pages/account/account';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -23,5 +24,6 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'admin', component: Admin },
+  { path: 'account', component: AccountComponent },
   { path: '**', component: NotFoundComponent },
 ];

@@ -47,17 +47,30 @@ import { AuthService } from '../../core/services/auth';
                <a href="#" class="text-white/70 hover:text-academy-yellow transition-colors"><i class="fa-brands fa-facebook-f text-sm"></i></a>
                <a href="#" class="text-white/70 hover:text-academy-yellow transition-colors"><i class="fa-brands fa-instagram text-sm"></i></a>
             </div>
-            <button (click)="handleMemberClick()" class="bg-academy-yellow text-academy-blue px-4 py-2 rounded-full font-display font-bold text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 whitespace-nowrap">
-              <span class="material-icons text-sm">{{ authService.user() ? 'logout' : 'person' }}</span>
-              {{ authService.user() ? 'Déconnexion' : 'Membre' }}
-            </button>
+            @if (authService.user()) {
+              <a routerLink="/account" class="bg-academy-yellow text-academy-blue px-4 py-2 rounded-full font-display font-bold text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 whitespace-nowrap">
+                <span class="material-icons text-sm">account_circle</span>
+                Mon Compte
+              </a>
+            } @else {
+              <button (click)="handleMemberClick()" class="bg-academy-yellow text-academy-blue px-4 py-2 rounded-full font-display font-bold text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 whitespace-nowrap">
+                <span class="material-icons text-sm">person</span>
+                Membre
+              </button>
+            }
           </div>
-
+ 
           <!-- Mobile Menu Button -->
           <div class="lg:hidden flex items-center gap-3">
-            <button (click)="handleMemberClick()" class="p-2 sm:p-2.5 rounded-full bg-white/10 text-academy-yellow hover:bg-white/20 transition-all border border-white/5 active:scale-90">
-              <span class="material-icons text-xl">{{ authService.user() ? 'logout' : 'person' }}</span>
-            </button>
+            @if (authService.user()) {
+              <a routerLink="/account" class="p-2 sm:p-2.5 rounded-full bg-white/10 text-academy-yellow hover:bg-white/20 transition-all border border-white/5 active:scale-90 flex items-center justify-center">
+                <span class="material-icons text-xl">account_circle</span>
+              </a>
+            } @else {
+              <button (click)="handleMemberClick()" class="p-2 sm:p-2.5 rounded-full bg-white/10 text-academy-yellow hover:bg-white/20 transition-all border border-white/5 active:scale-90 flex items-center justify-center">
+                <span class="material-icons text-xl">person</span>
+              </button>
+            }
             <button (click)="isMenuOpen.set(!isMenuOpen())" class="p-2 sm:p-2.5 rounded-xl bg-academy-yellow text-academy-blue hover:scale-105 active:scale-90 transition-all shadow-lg">
               <span class="material-icons text-2xl">{{ isMenuOpen() ? 'close' : 'menu' }}</span>
             </button>
@@ -172,6 +185,7 @@ export class NavbarComponent {
     
     if (user) {
       currentItems = currentItems.filter(item => item.label !== 'Inscriptions');
+      currentItems.push({ label: 'Mon Compte', path: '/account' });
       if (user.email === 'youknowfeus@gmail.com') {
         currentItems.push({ label: 'Admin', path: '/admin' });
       }

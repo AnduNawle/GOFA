@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { FirebaseService } from '../../core/services/firebase';
+import { AuthService } from '../../core/services/auth';
 import { serverTimestamp } from 'firebase/firestore';
 
 @Component({
@@ -32,6 +33,18 @@ import { serverTimestamp } from 'firebase/firestore';
                 </button>
               </div>
             } @else {
+              @if (!authService.user()) {
+                <div class="mb-8 p-5 bg-amber-50/70 rounded-2xl border border-amber-200/50 flex items-start gap-4">
+                  <span class="material-icons text-amber-500 text-2xl">info_outline</span>
+                  <div class="space-y-1">
+                    <p class="text-xs font-bold text-academy-blue uppercase tracking-wider">Connectez-vous pour suivre votre dossier</p>
+                    <p class="text-xs text-gray-500 leading-relaxed">En vous connectant avec votre compte Google avant de remplir ce formulaire, vous pourrez suivre l'avancement de votre inscription en temps réel dans l'onglet <strong class="text-academy-blue">Mon Compte</strong>.</p>
+                    <button type="button" (click)="authService.loginWithGoogle()" class="mt-2 text-xs font-bold text-academy-blue hover:text-academy-yellow flex items-center gap-1.5 transition-colors uppercase tracking-widest">
+                      <span class="material-icons text-sm">login</span> Se connecter maintenant
+                    </button>
+                  </div>
+                </div>
+              }
               <form [formGroup]="regForm" (ngSubmit)="submit()" class="space-y-8">
                 <div class="grid md:grid-cols-2 gap-8">
                   <div class="space-y-2">
@@ -146,6 +159,7 @@ import { serverTimestamp } from 'firebase/firestore';
 export class RegistrationComponent {
   private fb = inject(FormBuilder);
   private firebase = inject(FirebaseService);
+  protected authService = inject(AuthService);
 
   regForm: FormGroup = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -164,10 +178,12 @@ export class RegistrationComponent {
       this.isSubmitting.set(true);
       this.errorMessage.set(null);
       
+      const currentUser = this.authService.user();
       const payload = {
         ...this.regForm.value,
         createdAt: serverTimestamp(),
-        status: 'pending'
+        status: 'pending',
+        ...(currentUser ? { userId: currentUser.uid, parentEmail: currentUser.email || '' } : {})
       };
 
       try {
