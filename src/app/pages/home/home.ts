@@ -542,7 +542,7 @@ export class HomeComponent implements OnInit {
       awayTeam: 'Dakar Sacré-Cœur',
       category: 'U17',
       competition: 'Ligue Régionale U17',
-      date: { toDate: () => mockDate1 } as any,
+      date: { toDate: () => mockDate1 } as unknown as { toDate: () => Date },
       isFinished: true,
       homeScore: 2,
       awayScore: 1,
@@ -557,7 +557,7 @@ export class HomeComponent implements OnInit {
       awayTeam: 'Génération Foot',
       category: 'U15',
       competition: 'Coupe Sénégal',
-      date: { toDate: () => mockDate2 } as any,
+      date: { toDate: () => mockDate2 } as unknown as { toDate: () => Date },
       isFinished: false,
       homeScore: undefined,
       awayScore: undefined,
@@ -582,7 +582,7 @@ export class HomeComponent implements OnInit {
         title: 'Victoire éclatante des U17',
         content: 'Nos jeunes U17 ont brillé ce weekend face à Dakar Sacré-Cœur avec une victoire 2-1 pleine de caractère. Une belle démonstration de force.',
         imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop',
-        date: { toDate: () => mockDate1 } as any,
+        date: { toDate: () => mockDate1 } as unknown as { toDate: () => Date },
         category: 'Matchs'
       }
     ]);

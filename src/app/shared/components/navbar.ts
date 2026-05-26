@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, signal, computed, inject } from '@a
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth';
+import { Preferences } from '../../core/services/preferences';
 
 @Component({
   selector: 'app-navbar',
@@ -50,12 +51,12 @@ import { AuthService } from '../../core/services/auth';
             @if (authService.user()) {
               <a routerLink="/account" class="bg-academy-yellow text-academy-blue px-4 py-2 rounded-full font-display font-bold text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 whitespace-nowrap">
                 <span class="material-icons text-sm">account_circle</span>
-                Mon Compte
+                {{ preferences.t('Mon Compte', 'My Account') }}
               </a>
             } @else {
               <button (click)="handleMemberClick()" class="bg-academy-yellow text-academy-blue px-4 py-2 rounded-full font-display font-bold text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 whitespace-nowrap">
                 <span class="material-icons text-sm">person</span>
-                Membre
+                {{ preferences.t('Membre', 'Member') }}
               </button>
             }
           </div>
@@ -85,6 +86,10 @@ import { AuthService } from '../../core/services/auth';
         [class.opacity-0]="!isMenuOpen()"
         [class.pointer-events-none]="!isMenuOpen()"
         (click)="isMenuOpen.set(false)"
+        (keydown.enter)="isMenuOpen.set(false)"
+        tabindex="0"
+        role="button"
+        aria-label="Fermer le menu"
       ></div>
 
       <!-- Mobile Menu Drawer -->
@@ -165,33 +170,33 @@ import { AuthService } from '../../core/services/auth';
 })
 export class NavbarComponent {
   authService = inject(AuthService);
+  preferences = inject(Preferences);
   isMenuOpen = signal(false);
   
-  private _baseMenuItems = [
-    { label: 'Accueil', path: '/home' },
-    { label: 'Matchs', path: '/matches' },
-    { label: 'Joueurs', path: '/players' },
-    { label: 'Académie', path: '/academy' },
-    { label: 'Galerie', path: '/gallery' },
-    { label: 'Classements', path: '/rankings' },
-    { label: 'Transferts', path: '/transfers' },
-    { label: 'Inscriptions', path: '/registration' },
-    { label: 'Contact', path: '/contact' },
-  ];
-
   menuItems = computed(() => {
+    const isFr = this.preferences.language() === 'fr';
     const user = this.authService.user();
-    let currentItems = [...this._baseMenuItems];
+    
+    const items = [
+      { label: isFr ? 'Accueil' : 'Home', path: '/home' },
+      { label: isFr ? 'Matchs' : 'Matches', path: '/matches' },
+      { label: isFr ? 'Joueurs' : 'Players', path: '/players' },
+      { label: isFr ? 'Académie' : 'Academy', path: '/academy' },
+      { label: isFr ? 'Galerie' : 'Gallery', path: '/gallery' },
+      { label: isFr ? 'Classements' : 'Standings', path: '/rankings' },
+      { label: isFr ? 'Transferts' : 'Transfers', path: '/transfers' },
+      ...(user ? [] : [{ label: isFr ? 'Inscriptions' : 'Registration', path: '/registration' }]),
+      { label: isFr ? 'Contact' : 'Contact', path: '/contact' },
+    ];
     
     if (user) {
-      currentItems = currentItems.filter(item => item.label !== 'Inscriptions');
-      currentItems.push({ label: 'Mon Compte', path: '/account' });
+      items.push({ label: isFr ? 'Mon Compte' : 'My Account', path: '/account' });
       if (user.email === 'youknowfeus@gmail.com') {
-        currentItems.push({ label: 'Admin', path: '/admin' });
+        items.push({ label: 'Admin', path: '/admin' });
       }
-      return currentItems;
     }
-    return currentItems;
+    
+    return items;
   });
 
   async handleMemberClick() {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FirebaseService } from '../../core/services/firebase';
+import { Preferences } from '../../core/services/preferences';
 import { where, orderBy } from 'firebase/firestore';
 
 interface UserRegistration {
@@ -181,7 +182,7 @@ interface UserRegistration {
                   </div>
                 } @else {
                   <!-- Active Registrations list -->
-                  <div class="divide-y divide-gray-100" [class.max-h-[300px].overflow-y-auto="prefCompactMode()"]>
+                  <div class="divide-y divide-gray-100" [class.max-h-[300px]]="prefCompactMode()" [class.overflow-y-auto]="prefCompactMode()">
                     @for (reg of registrations(); track reg.id) {
                       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-gray-50/50 transition-colors -mx-4 px-4 rounded-xl"
                            [class.py-3="prefCompactMode()"] [class.py-6="!prefCompactMode()"]>
@@ -451,6 +452,7 @@ interface UserRegistration {
 export class AccountComponent {
   authService = inject(AuthService);
   private firebaseService = inject(FirebaseService);
+  preferences = inject(Preferences);
 
   registrations = signal<UserRegistration[]>([]);
   isLoading = signal(false);
@@ -459,14 +461,14 @@ export class AccountComponent {
   acceptedCount = signal(0);
   rejectedCount = signal(0);
 
-  // Custom view and personalization settings signals
+  // Custom view and personalization settings mapped directly to global Preferences
   activeTab = signal<'records' | 'settings'>('records');
-  prefLanguage = signal<string>('fr');
-  prefEmailAlerts = signal<boolean>(true);
-  prefSmsAlerts = signal<boolean>(false);
-  prefCompactMode = signal<boolean>(false);
-  prefPosition = signal<string>('all');
-  prefNotificationType = signal<'immediate' | 'daily'>('immediate');
+  prefLanguage = this.preferences.language;
+  prefEmailAlerts = this.preferences.emailAlerts;
+  prefSmsAlerts = this.preferences.smsAlerts;
+  prefCompactMode = this.preferences.compactMode;
+  prefPosition = this.preferences.preferredPosition;
+  prefNotificationType = this.preferences.notificationType;
   settingsSaved = signal(false);
 
   constructor() {
@@ -475,29 +477,11 @@ export class AccountComponent {
       const currentUser = this.authService.user();
       if (currentUser) {
         this.loadUserRegistrations(currentUser.uid);
-        this.loadLocalPreferences(currentUser.uid);
       } else {
         this.registrations.set([]);
         this.clearCounts();
       }
     });
-  }
-
-  private loadLocalPreferences(userId: string) {
-    try {
-      const data = localStorage.getItem(`gofa_pref_${userId}`);
-      if (data) {
-        const parsed = JSON.parse(data);
-        if (parsed.language) this.prefLanguage.set(parsed.language);
-        if (parsed.emailAlerts !== undefined) this.prefEmailAlerts.set(parsed.emailAlerts);
-        if (parsed.smsAlerts !== undefined) this.prefSmsAlerts.set(parsed.smsAlerts);
-        if (parsed.compactMode !== undefined) this.prefCompactMode.set(parsed.compactMode);
-        if (parsed.preferredPosition) this.prefPosition.set(parsed.preferredPosition);
-        if (parsed.notificationType) this.prefNotificationType.set(parsed.notificationType);
-      }
-    } catch (e) {
-      console.error('Error loading local preferences:', e);
-    }
   }
 
   toggleCompactMode() {
@@ -524,20 +508,12 @@ export class AccountComponent {
     this.prefPosition.set(pos);
   }
 
-  savePreferences() {
+  async savePreferences() {
     const currentUser = this.authService.user();
     if (!currentUser) return;
 
     try {
-      const payload = {
-        language: this.prefLanguage(),
-        emailAlerts: this.prefEmailAlerts(),
-        smsAlerts: this.prefSmsAlerts(),
-        compactMode: this.prefCompactMode(),
-        preferredPosition: this.prefPosition(),
-        notificationType: this.prefNotificationType()
-      };
-      localStorage.setItem(`gofa_pref_${currentUser.uid}`, JSON.stringify(payload));
+      await this.preferences.save();
       this.settingsSaved.set(true);
       setTimeout(() => {
         this.settingsSaved.set(false);

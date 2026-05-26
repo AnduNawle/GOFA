@@ -79,7 +79,7 @@ import { orderBy, Unsubscribe } from 'firebase/firestore';
               <!--================= MATCHES TAB =================-->
               @if (activeTab() === 'matches') {
                 <h2 class="font-display font-bold text-2xl mb-6 uppercase tracking-wider border-l-4 border-academy-yellow pl-3">Ajouter un match</h2>
-                <form [formGroup]="matchForm" (ngSubmit)="onSubmitMatch('matches')" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 border-b border-white/10 pb-12">
+                <form [formGroup]="matchForm" (ngSubmit)="onSubmitMatch()" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 border-b border-white/10 pb-12">
                   <!-- Match Info -->
                   <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                     <div>
@@ -258,7 +258,7 @@ import { orderBy, Unsubscribe } from 'firebase/firestore';
                     <div class="bg-black/20 border border-white/5 p-4 rounded flex items-center justify-between">
                       <div class="flex items-center gap-3">
                         @if (player.photoUrl) {
-                          <img [src]="player.photoUrl" class="w-10 h-10 rounded-full object-cover" referrerpolicy="no-referrer">
+                          <img [src]="player.photoUrl" [alt]="player.name || 'Photo'" class="w-10 h-10 rounded-full object-cover" referrerpolicy="no-referrer">
                         } @else {
                           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                             <span class="material-icons text-xl">person</span>
@@ -412,7 +412,7 @@ export class Admin implements OnInit, OnDestroy {
     this.unsubs.forEach(unsub => unsub());
   }
 
-  async onSubmitMatch(tab: string) {
+  async onSubmitMatch() {
     if (this.matchForm.invalid) return;
 
     this.isSubmitting.set(true);
@@ -422,13 +422,13 @@ export class Admin implements OnInit, OnDestroy {
     try {
       const formValue = this.matchForm.value;
       
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         ...formValue,
-        date: new Date(formValue.date)
+        date: new Date(formValue.date || '')
       };
 
-      if (payload.homeScore === null || payload.homeScore === '') delete payload.homeScore;
-      if (payload.awayScore === null || payload.awayScore === '') delete payload.awayScore;
+      if (payload['homeScore'] === null || payload['homeScore'] === '') delete payload['homeScore'];
+      if (payload['awayScore'] === null || payload['awayScore'] === '') delete payload['awayScore'];
 
       await this.firebaseService.createDocument('matches', payload);
       

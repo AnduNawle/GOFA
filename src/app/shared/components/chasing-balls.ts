@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, signal, ViewChildren, QueryList, inject, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -21,8 +21,8 @@ interface Ball {
   imports: [CommonModule],
   template: `
     @for (ball of balls(); track ball.id) {
-      <div 
-        class="fixed z-50 rounded-full flex items-center justify-center cursor-pointer transition-opacity duration-1000"
+      <button 
+        class="fixed z-50 rounded-full flex items-center justify-center cursor-pointer transition-opacity duration-1000 border-0 bg-transparent p-0 outline-none"
         [class.opacity-0]="!ball.visible"
         [class.opacity-100]="ball.visible"
         [class.pointer-events-none]="!ball.visible"
@@ -32,9 +32,11 @@ interface Ball {
         [style.height.px]="ball.size"
         [style.transform]="'rotate(' + ball.rotation + 'deg)'"
         (click)="catchBall(ball.id)"
+        type="button"
+        [aria-label]="'Attraper le ballon numero ' + ball.id"
       >
         <span class="material-icons text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" [style.font-size.px]="ball.size * 0.8">sports_soccer</span>
-      </div>
+      </button>
     }
 
     <!-- Celebration element when clicked -->
@@ -63,8 +65,8 @@ export class ChasingBallsComponent implements OnInit, OnDestroy {
   catchMessage = signal<string | null>(null);
   
   private animationFrameId: number | null = null;
-  private messageTimeout: any = null;
-  private visibilityInterval: any = null;
+  private messageTimeout: ReturnType<typeof setTimeout> | null = null;
+  private visibilityInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit() {
     this.initBalls();

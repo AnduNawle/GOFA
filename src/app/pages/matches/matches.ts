@@ -163,7 +163,7 @@ export class MatchesComponent implements OnInit {
       } else {
         this.setMockMatches();
       }
-    } catch (e) {
+    } catch {
       this.setMockMatches();
     }
   }
@@ -181,7 +181,7 @@ export class MatchesComponent implements OnInit {
         awayTeam: 'Dakar Sacré-Cœur',
         category: 'U17',
         competition: 'Ligue Régionale U17',
-        date: { toDate: () => mockDate1 } as any,
+        date: { toDate: () => mockDate1 } as unknown as { toDate: () => Date },
         isFinished: true,
         homeScore: 2,
         awayScore: 1,
@@ -195,7 +195,7 @@ export class MatchesComponent implements OnInit {
         awayTeam: 'Génération Foot',
         category: 'U15',
         competition: 'Coupe du Sénégal Jeunes',
-        date: { toDate: () => mockDate2 } as any,
+        date: { toDate: () => mockDate2 } as unknown as { toDate: () => Date },
         isFinished: false,
         homeScore: undefined,
         awayScore: undefined,
@@ -209,7 +209,7 @@ export class MatchesComponent implements OnInit {
         awayTeam: 'Golf Océan Academy',
         category: 'Séniors',
         competition: 'Championnat R2',
-        date: { toDate: () => { const d = new Date(); d.setDate(d.getDate() - 7); return d; } } as any,
+        date: { toDate: () => { const d = new Date(); d.setDate(d.getDate() - 7); return d; } } as unknown as { toDate: () => Date },
         isFinished: true,
         homeScore: 0,
         awayScore: 3,

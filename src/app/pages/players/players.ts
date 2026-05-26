@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal, effect } fr
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../core/services/firebase';
 import { Player } from '../../core/models/entities';
+import { Preferences } from '../../core/services/preferences';
 import { orderBy } from 'firebase/firestore';
 
 @Component({
@@ -51,7 +52,15 @@ import { orderBy } from 'firebase/firestore';
                 </div>
                 <div class="p-6 text-center">
                   <h3 class="text-xl font-display font-black text-academy-blue uppercase italic">{{ player.name }}</h3>
-                  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">{{ player.position }}</p>
+                  
+                  <div class="flex items-center justify-center gap-1.5 mb-4">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ player.position }}</span>
+                    @if (isPreferredPosition(player.position)) {
+                      <span class="inline-flex items-center text-[9px] bg-amber-50 text-amber-600 font-bold px-1.5 py-0.5 rounded border border-amber-200 uppercase tracking-widest leading-none">
+                        ★ Focus
+                      </span>
+                    }
+                  </div>
                   
                   <div class="flex justify-center gap-6 border-t border-gray-50 pt-4">
                     <div class="flex flex-col">
@@ -80,6 +89,7 @@ import { orderBy } from 'firebase/firestore';
 })
 export class PlayersComponent implements OnInit {
   private firebase = inject(FirebaseService);
+  preferences = inject(Preferences);
 
   allPlayers = signal<Player[]>([]);
   selectedCategory = signal<string>('Tous');
@@ -89,11 +99,27 @@ export class PlayersComponent implements OnInit {
     effect(() => {
       const cat = this.selectedCategory();
       const all = this.allPlayers();
-      if (cat === 'Tous') {
-        this.filteredPlayers.set(all);
-      } else {
-        this.filteredPlayers.set(all.filter((p: Player) => p.category === cat));
+      const prefPos = this.preferences.preferredPosition();
+
+      let filtered = cat === 'Tous' ? all : all.filter((p: Player) => p.category === cat);
+
+      if (prefPos !== 'all') {
+        let matchStr = '';
+        if (prefPos === 'Gardiens') matchStr = 'Gardien';
+        else if (prefPos === 'Défenseurs') matchStr = 'Défenseur';
+        else if (prefPos === 'Milieux') matchStr = 'Milieu';
+        else if (prefPos === 'Attaquants') matchStr = 'Attaquant';
+
+        if (matchStr) {
+          filtered = [...filtered].sort((a, b) => {
+            const aMatch = a.position?.toLowerCase().includes(matchStr.toLowerCase()) ? 1 : 0;
+            const bMatch = b.position?.toLowerCase().includes(matchStr.toLowerCase()) ? 1 : 0;
+            return bMatch - aMatch;
+          });
+        }
       }
+
+      this.filteredPlayers.set(filtered);
     });
   }
 
@@ -101,17 +127,28 @@ export class PlayersComponent implements OnInit {
     this.fetchPlayers();
   }
 
+  isPreferredPosition(pos: string): boolean {
+    const prefPos = this.preferences.preferredPosition();
+    if (prefPos === 'all' || !pos) return false;
+    let matchStr = '';
+    if (prefPos === 'Gardiens') matchStr = 'Gardien';
+    else if (prefPos === 'Défenseurs') matchStr = 'Défenseur';
+    else if (prefPos === 'Milieux') matchStr = 'Milieu';
+    else if (prefPos === 'Attaquants') matchStr = 'Attaquant';
+    return pos.toLowerCase().includes(matchStr.toLowerCase());
+  }
+
   private async fetchPlayers() {
     try {
       const data = await this.firebase.getCollection<Player>('players', [
         orderBy('name', 'asc')
-      ]);
+       ]);
       if (data.length > 0) {
         this.allPlayers.set(data);
       } else {
         this.setMockPlayers();
       }
-    } catch (e) {
+    } catch {
       this.setMockPlayers();
     }
   }
