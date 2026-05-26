@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
       <!-- Breadcrumb Header -->
       <section class="bg-academy-blue py-20 text-white relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
-           <img src="https://images.unsplash.com/photo-1510133769068-6c17058e6584?q=80&w=2000" class="w-full h-full object-cover" alt="Arrière-plan stade">
+           <img src="public/images/stade.jpeg" class="w-full h-full object-cover" alt="Arrière-plan stade">
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h1 class="text-6xl font-display font-black uppercase italic tracking-tighter mb-4">L'Académie</h1>

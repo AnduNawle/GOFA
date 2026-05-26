@@ -12,35 +12,35 @@ import { limit, orderBy, where } from 'firebase/firestore';
   template: `
     <div class="min-h-screen">
       <!-- Hero Section -->
-      <section class="relative h-[85vh] flex items-center overflow-hidden bg-academy-blue group">
+      <section class="relative min-h-[75vh] lg:h-[85vh] py-16 lg:py-0 flex items-center overflow-hidden bg-academy-blue group">
         <!-- Background Overlay & Image -->
         <div class="absolute inset-0">
            <img 
             src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2000" 
             alt="Academy Players" 
-            class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-10000"
+            class="w-full h-full object-cover object-[center_top] sm:object-center opacity-30 lg:opacity-50 group-hover:scale-105 transition-transform duration-10000"
           />
-          <div class="absolute inset-0 bg-gradient-to-r from-academy-blue via-academy-blue/80 to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-academy-blue/90 via-academy-blue/80 to-academy-blue lg:bg-gradient-to-r lg:from-academy-blue lg:via-academy-blue/80 lg:to-transparent"></div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-8 animate-in fade-in slide-in-from-left duration-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full animate-in fade-in duration-500">
+          <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div class="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-left duration-700">
               <div class="space-y-2">
-                <h3 class="text-academy-yellow font-display font-bold uppercase tracking-[0.2em] text-sm md:text-base">Bienvenue à GOFA</h3>
-                <h1 class="text-6xl md:text-8xl font-display font-black text-white leading-[0.9] tracking-tighter uppercase italic">
+                <h3 class="text-academy-yellow font-display font-bold uppercase tracking-[0.2em] text-xs sm:text-sm md:text-base">Bienvenue à GOFA</h3>
+                <h1 class="text-4xl sm:text-6xl md:text-8xl font-display font-black text-white leading-[1.05] sm:leading-[0.9] tracking-tight sm:tracking-tighter uppercase italic">
                   Le talent <br/> <span class="text-academy-yellow italic">se construit ici</span>
                 </h1>
               </div>
-              <p class="text-white/80 text-lg md:text-xl max-w-xl leading-relaxed">
+              <p class="text-white/80 text-sm sm:text-lg md:text-xl max-w-xl leading-relaxed">
                 Golf Océan Football Academy forme les champions de demain avec passion, discipline et excellence.
               </p>
-              <div class="flex flex-wrap gap-4 pt-4">
-                <button [routerLink]="['/academy']" class="bg-academy-yellow text-academy-blue px-8 py-4 rounded-md font-display font-bold uppercase tracking-widest text-sm hover:bg-white transition-all shadow-xl flex items-center gap-3 group/btn cursor-pointer">
+              <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
+                <button [routerLink]="['/academy']" class="w-full sm:w-auto bg-academy-yellow text-academy-blue px-6 sm:px-8 py-3.5 sm:py-4 rounded-md font-display font-bold uppercase tracking-widest text-xs sm:text-sm hover:bg-white transition-all shadow-xl flex items-center justify-center gap-3 group/btn cursor-pointer">
                   Découvrir l'académie
                   <span class="material-icons text-sm group-hover/btn:translate-x-1 transition-transform">chevron_right</span>
                 </button>
-                <button [routerLink]="['/matches']" class="bg-transparent border-2 border-white/20 text-white px-8 py-4 rounded-md font-display font-bold uppercase tracking-widest text-sm hover:bg-white/10 transition-all flex items-center gap-3 cursor-pointer">
+                <button [routerLink]="['/matches']" class="w-full sm:w-auto bg-transparent border-2 border-white/20 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-md font-display font-bold uppercase tracking-widest text-xs sm:text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-3 cursor-pointer">
                   Voir les matchs
                 </button>
               </div>
