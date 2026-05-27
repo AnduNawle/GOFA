@@ -4,8 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FirebaseService } from '../../core/services/firebase';
 import { Preferences } from '../../core/services/preferences';
-import { where, orderBy, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../core/firebase-init';
+import { where, orderBy, serverTimestamp } from 'firebase/firestore';
 
 interface UserRegistration {
   id: string;
@@ -748,18 +747,19 @@ export class AccountComponent {
     this.isSavingProfile.set(true);
     try {
       const payload = {
-        displayName: this.profileDisplayName(),
+        uid: currentUser.uid,
+        email: currentUser.email || '',
+        displayName: this.profileDisplayName() || currentUser.displayName || 'Utilisateur',
         phoneNumber: this.profilePhoneNumber(),
         birthDate: this.profileBirthDate(),
         address: this.profileAddress(),
         favoriteClub: this.profileFavoriteClub(),
         preferredFoot: this.profilePreferredFoot(),
         motivation: this.profileMotivation(),
-        updatedAt: new Date().toISOString()
+        updatedAt: serverTimestamp()
       };
       
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      await setDoc(userDocRef, payload, { merge: true });
+      await this.firebaseService.setDocument('users', currentUser.uid, payload, true);
       
       this.profileSaved.set(true);
       setTimeout(() => {

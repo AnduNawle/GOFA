@@ -38,10 +38,16 @@ service cloud.firestore {
     }
 
     function isValidUser(data) {
-      return data.uid is string &&
-             data.displayName is string &&
-             data.email is string &&
-             data.updatedAt == request.time;
+      return data.uid is string && data.uid.size() <= 128 &&
+             data.displayName is string && data.displayName.size() <= 100 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.updatedAt == request.time &&
+             (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() <= 40)) &&
+             (!('birthDate' in data) || (data.birthDate is string && data.birthDate.size() <= 20)) &&
+             (!('address' in data) || (data.address is string && data.address.size() <= 150)) &&
+             (!('favoriteClub' in data) || (data.favoriteClub is string && data.favoriteClub.size() <= 100)) &&
+             (!('preferredFoot' in data) || (data.preferredFoot in ['Droit', 'Gauche', 'Les deux'])) &&
+             (!('motivation' in data) || (data.motivation is string && data.motivation.size() <= 1000));
     }
 
     function isValidRegistration(data) {

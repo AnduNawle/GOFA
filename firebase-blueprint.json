@@ -79,7 +79,13 @@
         "displayName": { "type": "string" },
         "email": { "type": "string" },
         "photoURL": { "type": "string" },
-        "updatedAt": { "type": "string", "format": "date-time" }
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "phoneNumber": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "address": { "type": "string" },
+        "favoriteClub": { "type": "string" },
+        "preferredFoot": { "type": "string", "enum": ["Droit", "Gauche", "Les deux"] },
+        "motivation": { "type": "string" }
       },
       "required": ["uid", "displayName", "email", "updatedAt"]
     }

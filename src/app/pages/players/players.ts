@@ -179,7 +179,7 @@ export class PlayersComponent implements OnInit {
         age: 19,
         category: 'Séniors',
         position: 'Défenseur',
-        photoUrl: 'https://images.unsplash.com/photo-1627627256606-cfaeb57e5e04?q=80&w=400&h=500&fit=crop',
+        photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&h=500&fit=crop',
         stats: { goals: 1, assists: 2, matches: 22 }
       },
       {

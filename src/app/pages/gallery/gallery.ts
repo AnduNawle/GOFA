@@ -42,14 +42,14 @@ import { CommonModule } from '@angular/common';
 })
 export class GalleryComponent {
   images = [
-    { url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop', title: 'Entraînement U17', category: 'Training' },
-    { url: 'https://images.unsplash.com/photo-1518605368461-1e128224b456?q=80&w=800&auto=format&fit=crop', title: 'Match de coupe', category: 'Compétition' },
-    { url: 'https://images.unsplash.com/photo-1551280857-2b9bbe5240dc?q=80&w=800&auto=format&fit=crop', title: 'Victoire', category: 'Célébration' },
-    { url: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=800&auto=format&fit=crop', title: 'Tactique', category: 'Vestiaire' },
-    { url: 'https://images.unsplash.com/photo-1431324155629-1a5bb018cc16?q=80&w=800&auto=format&fit=crop', title: 'Coup franc', category: 'Action' },
-    { url: 'https://images.unsplash.com/photo-1552667466-07770ae110d0?q=80&w=800&auto=format&fit=crop', title: 'Échauffement', category: 'Avant-match' },
-    { url: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=800&auto=format&fit=crop', title: 'Moment de joie', category: 'Célébration' },
-    { url: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=800&auto=format&fit=crop', title: 'Buteur', category: 'Match' },
-    { url: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?q=80&w=800&auto=format&fit=crop', title: 'Tir au but', category: 'Action' }
+    { url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop', title: "Terrain d'honneur", category: 'Infrastructures' },
+    { url: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?q=80&w=800&auto=format&fit=crop', title: 'Dribble explosif', category: 'Action' },
+    { url: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=800&auto=format&fit=crop', title: "Célébration d'équipe", category: 'Victoire' },
+    { url: 'https://images.unsplash.com/photo-1518604666860-9ed391f76460?q=80&w=800&auto=format&fit=crop', title: 'Académie des jeunes', category: 'Formation' },
+    { url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800&auto=format&fit=crop', title: 'Séance sous les projecteurs', category: 'Entraînement' },
+    { url: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=800&auto=format&fit=crop', title: 'Préparation physique', category: 'Entraînement' },
+    { url: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?q=80&w=800&auto=format&fit=crop', title: 'Le but décisif', category: 'Match' },
+    { url: 'https://images.unsplash.com/photo-1504305754058-2f08ccd89a0a?q=80&w=800&auto=format&fit=crop', title: 'Arrêt spectaculaire', category: 'Action' },
+    { url: 'https://images.unsplash.com/photo-1516567727145-ab3c1a391514?q=80&w=800&auto=format&fit=crop', title: "Esprit d'équipe", category: 'Valeurs' }
   ];
 }

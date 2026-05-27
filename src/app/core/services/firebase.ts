@@ -5,6 +5,7 @@ import {
   getDocs, 
   getDoc, 
   addDoc, 
+  setDoc,
   deleteDoc, 
   query, 
   onSnapshot,
@@ -98,6 +99,15 @@ export class FirebaseService {
     } catch (error) {
       this.handleFirestoreError(error, OperationType.CREATE, path);
       return null;
+    }
+  }
+
+  async setDocument(path: string, id: string, data: DocumentData, merge = true) {
+    try {
+      await setDoc(doc(db, path, id), data, { merge });
+    } catch (error) {
+      this.handleFirestoreError(error, OperationType.WRITE, `${path}/${id}`);
+      throw error;
     }
   }
 
